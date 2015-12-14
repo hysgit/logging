@@ -3,6 +3,7 @@ package com.caitu99.log.util;
 /**
  * Created by Lion on 2015/12/12 0012.
  */
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Consts;
@@ -43,15 +44,15 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- *  依赖的jar包有：commons-lang-2.6.jar、httpclient-4.3.2.jar、httpcore-4.3.1.jar、commons-io-2.4.jar
- * @author zhaoyb
+ * 依赖的jar包有：commons-lang-2.6.jar、httpclient-4.3.2.jar、httpcore-4.3.1.jar、commons-io-2.4.jar
  *
+ * @author zhaoyb
  */
 public class HttpClientUtils {
 
-    public static final int connTimeout=10000;
-    public static final int readTimeout=10000;
-    public static final String charset="UTF-8";
+    public static final int connTimeout = 10000;
+    public static final int readTimeout = 10000;
+    public static final String charset = "UTF-8";
     private static HttpClient client = null;
 
     static {
@@ -61,12 +62,12 @@ public class HttpClientUtils {
         client = HttpClients.custom().setConnectionManager(cm).build();
     }
 
-    public static String postParameters(String url, String parameterStr) throws ConnectTimeoutException, SocketTimeoutException, Exception{
-        return post(url,parameterStr,"application/x-www-form-urlencoded",charset,connTimeout,readTimeout);
+    public static String postParameters(String url, String parameterStr) throws ConnectTimeoutException, SocketTimeoutException, Exception {
+        return post(url, parameterStr, "application/x-www-form-urlencoded", charset, connTimeout, readTimeout);
     }
 
-    public static String postParameters(String url, String parameterStr,String charset, Integer connTimeout, Integer readTimeout) throws ConnectTimeoutException, SocketTimeoutException, Exception{
-        return post(url,parameterStr,"application/x-www-form-urlencoded",charset,connTimeout,readTimeout);
+    public static String postParameters(String url, String parameterStr, String charset, Integer connTimeout, Integer readTimeout) throws ConnectTimeoutException, SocketTimeoutException, Exception {
+        return post(url, parameterStr, "application/x-www-form-urlencoded", charset, connTimeout, readTimeout);
     }
 
     public static String postParameters(String url, Map<String, String> params) throws ConnectTimeoutException,
@@ -74,7 +75,7 @@ public class HttpClientUtils {
         return postForm(url, params, null, connTimeout, readTimeout);
     }
 
-    public static String postParameters(String url, Map<String, String> params, Integer connTimeout,Integer readTimeout) throws ConnectTimeoutException,
+    public static String postParameters(String url, Map<String, String> params, Integer connTimeout, Integer readTimeout) throws ConnectTimeoutException,
             SocketTimeoutException, Exception {
         return postForm(url, params, null, connTimeout, readTimeout);
     }
@@ -91,9 +92,9 @@ public class HttpClientUtils {
      * 发送一个 Post 请求, 使用指定的字符集编码.
      *
      * @param url
-     * @param body RequestBody
-     * @param mimeType 例如 application/xml "application/x-www-form-urlencoded" a=1&b=2&c=3
-     * @param charset 编码
+     * @param body        RequestBody
+     * @param mimeType    例如 application/xml "application/x-www-form-urlencoded" a=1&b=2&c=3
+     * @param charset     编码
      * @param connTimeout 建立链接超时时间,毫秒.
      * @param readTimeout 响应超时时间,毫秒.
      * @return ResponseBody, 使用指定的字符集编码.
@@ -101,7 +102,7 @@ public class HttpClientUtils {
      * @throws SocketTimeoutException  响应超时
      * @throws Exception
      */
-    public static String post(String url, String body, String mimeType,String charset, Integer connTimeout, Integer readTimeout)
+    public static String post(String url, String body, String mimeType, String charset, Integer connTimeout, Integer readTimeout)
             throws ConnectTimeoutException, SocketTimeoutException, Exception {
         HttpClient client = null;
         HttpPost post = new HttpPost(url);
@@ -134,7 +135,7 @@ public class HttpClientUtils {
             result = IOUtils.toString(res.getEntity().getContent(), charset);
         } finally {
             post.releaseConnection();
-            if (url.startsWith("https") && client != null&& client instanceof CloseableHttpClient) {
+            if (url.startsWith("https") && client != null && client instanceof CloseableHttpClient) {
                 ((CloseableHttpClient) client).close();
             }
         }
@@ -154,7 +155,7 @@ public class HttpClientUtils {
      * @throws SocketTimeoutException
      * @throws Exception
      */
-    public static String postForm(String url, Map<String, String> params, Map<String, String> headers, Integer connTimeout,Integer readTimeout) throws ConnectTimeoutException,
+    public static String postForm(String url, Map<String, String> params, Map<String, String> headers, Integer connTimeout, Integer readTimeout) throws ConnectTimeoutException,
             SocketTimeoutException, Exception {
 
         HttpClient client = null;
@@ -204,7 +205,7 @@ public class HttpClientUtils {
         }
     }
 
-    public static String postJsonAndHeaders(String url, String body, String mimeType,String charset, Map<String, String> headers, Integer connTimeout,Integer readTimeout) throws ConnectTimeoutException,
+    public static String postJsonAndHeaders(String url, String body, String mimeType, String charset, Map<String, String> headers, Integer connTimeout, Integer readTimeout) throws ConnectTimeoutException,
             SocketTimeoutException, Exception {
 
         HttpClient client = null;
@@ -250,22 +251,20 @@ public class HttpClientUtils {
     }
 
 
-
-
     /**
      * 发送一个 GET 请求
      *
      * @param url
      * @param charset
-     * @param connTimeout  建立链接超时时间,毫秒.
-     * @param readTimeout  响应超时时间,毫秒.
+     * @param connTimeout 建立链接超时时间,毫秒.
+     * @param readTimeout 响应超时时间,毫秒.
      * @return
-     * @throws ConnectTimeoutException   建立链接超时
-     * @throws SocketTimeoutException   响应超时
+     * @throws ConnectTimeoutException 建立链接超时
+     * @throws SocketTimeoutException  响应超时
      * @throws Exception
      */
-    public static String get(String url, String charset, Integer connTimeout,Integer readTimeout)
-            throws ConnectTimeoutException,SocketTimeoutException, Exception {
+    public static String get(String url, String charset, Integer connTimeout, Integer readTimeout)
+            throws ConnectTimeoutException, SocketTimeoutException, Exception {
 
         HttpClient client = null;
         HttpGet get = new HttpGet(url);
@@ -313,7 +312,7 @@ public class HttpClientUtils {
     @SuppressWarnings("unused")
     private static String getCharsetFromResponse(HttpResponse ressponse) {
         // Content-Type:text/html; charset=GBK
-        if (ressponse.getEntity() != null  && ressponse.getEntity().getContentType() != null && ressponse.getEntity().getContentType().getValue() != null) {
+        if (ressponse.getEntity() != null && ressponse.getEntity().getContentType() != null && ressponse.getEntity().getContentType().getValue() != null) {
             String contentType = ressponse.getEntity().getContentType().getValue();
             if (contentType.contains("charset=")) {
                 return contentType.substring(contentType.indexOf("charset=") + 8);
@@ -323,16 +322,16 @@ public class HttpClientUtils {
     }
 
 
-
     /**
      * 创建 SSL连接
+     *
      * @return
      * @throws GeneralSecurityException
      */
     private static CloseableHttpClient createSSLInsecureClient() throws GeneralSecurityException {
         try {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
-                public boolean isTrusted(X509Certificate[] chain,String authType) throws CertificateException {
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                     return true;
                 }
             }).build();
@@ -370,7 +369,7 @@ public class HttpClientUtils {
 
     public static void main(String[] args) {
         try {
-            String str= post("https://localhost:443/ssl/test.shtml","name=12&page=34","application/x-www-form-urlencoded", "UTF-8", 10000, 10000);
+            String str = post("https://localhost:443/ssl/test.shtml", "name=12&page=34", "application/x-www-form-urlencoded", "UTF-8", 10000, 10000);
             //String str= get("https://localhost:443/ssl/test.shtml?name=12&page=34","GBK");
             /*Map<String,String> map = new HashMap<String,String>();
             map.put("name", "111");

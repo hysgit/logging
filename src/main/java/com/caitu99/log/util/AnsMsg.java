@@ -8,14 +8,12 @@ import java.util.regex.Pattern;
  */
 public class AnsMsg {
     private static final Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}\\s{1,2}\\d{2}:\\d{2}:\\d{2}\\.\\d{3}.*?ERROR");
-    public static boolean sendOrNot(String string)
-    {
+
+    public static boolean sendOrNot(String string) {
         Matcher matcher = pattern.matcher(string);
-        if(matcher.find())
-        {
+        if (matcher.find()) {
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }

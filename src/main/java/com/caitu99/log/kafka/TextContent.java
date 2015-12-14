@@ -12,9 +12,8 @@ public class TextContent {
     }
 
     public void setContent(String content) {
-        if(content.contains("\n\t"))
-        {
-            content = content.substring(0,content.indexOf("\n\t"));
+        if (content.contains("\n\t")) {
+            content = content.substring(0, content.indexOf("\n\t"));
         }
         this.content = content;
     }

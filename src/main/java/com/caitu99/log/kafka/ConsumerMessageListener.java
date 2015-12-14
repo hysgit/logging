@@ -21,66 +21,65 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-/** 
+/**
  * kafka 消息消费者
- * @Description: (类职责详细描述,可空) 
- * @ClassName: ConsumerMessageListener 
+ *
  * @author Hongbo Peng
- * @date 2015年11月30日 下午6:00:19 
- * @Copyright (c) 2015-2020 by caitu99 
+ * @Description: (类职责详细描述, 可空)
+ * @ClassName: ConsumerMessageListener
+ * @date 2015年11月30日 下午6:00:19
+ * @Copyright (c) 2015-2020 by caitu99
  */
 @Service("consumerMessageListener")
 public class ConsumerMessageListener implements MessageListener {
-	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	private AppConfig appConfig;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
-	public void onMessage(KafkaMessage message) {
-		try {
+    @Autowired
+    private AppConfig appConfig;
 
-			String msgStr = MessageUtils.decodePayload(message, new StringDecoder());
-			logger.debug("Listen to the message is {}",msgStr);
-			if(AnsMsg.sendOrNot(msgStr)) {
-				String url1 = "https://oapi.dingtalk.com/gettoken?corpid="+appConfig.corpid+"&corpsecret="+appConfig.corpsecret;
+    @Override
+    public void onMessage(KafkaMessage message) {
+        try {
 
-				String str = HttpClientUtils.get(url1, "UTF-8");
-				JSONObject json = JSON.parseObject(str);
-				Integer code = json.getInteger("errcode");
-				String access_token = json.getString("access_token");
+            String msgStr = MessageUtils.decodePayload(message, new StringDecoder());
+            logger.debug("Listen to the message is {}", msgStr);
+            if (AnsMsg.sendOrNot(msgStr)) {
+                String url1 = "https://oapi.dingtalk.com/gettoken?corpid=" + appConfig.corpid + "&corpsecret=" + appConfig.corpsecret;
 
-				if (code == 0) {
-					url1 = "https://oapi.dingtalk.com/message/send?access_token=" + access_token;
-					Map<String, String> headers = new HashMap<>();
-					headers.put("Content-Type", "application/json; charset=UTF-8");
-					TextContent textContent = new TextContent();
-					textContent.setContent(msgStr);
-					JSONbody jsonbody = new JSONbody();
-					if(!"".equals(appConfig.userId))
-					{
-						jsonbody.setTouser(appConfig.userId);
-					}
-					if(!"".equals(appConfig.partyId))
-					{
-						jsonbody.setToparty(appConfig.partyId);
-					}
-					jsonbody.setAgentid(appConfig.agentId);
-					jsonbody.setMsgtype("text");
+                String str = HttpClientUtils.get(url1, "UTF-8");
+                JSONObject json = JSON.parseObject(str);
+                Integer code = json.getInteger("errcode");
+                String access_token = json.getString("access_token");
 
-					jsonbody.setText(textContent);
-					String body = JSON.toJSONString(jsonbody);
-					String str2 = HttpClientUtils.postJsonAndHeaders(url1, body, "application/json", "UTF-8", headers, 10000, 10000);
+                if (code == 0) {
+                    url1 = "https://oapi.dingtalk.com/message/send?access_token=" + access_token;
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Content-Type", "application/json; charset=UTF-8");
+                    TextContent textContent = new TextContent();
+                    textContent.setContent(msgStr);
+                    JSONbody jsonbody = new JSONbody();
+                    if (!"".equals(appConfig.userId)) {
+                        jsonbody.setTouser(appConfig.userId);
+                    }
+                    if (!"".equals(appConfig.partyId)) {
+                        jsonbody.setToparty(appConfig.partyId);
+                    }
+                    jsonbody.setAgentid(appConfig.agentId);
+                    jsonbody.setMsgtype("text");
 
-				}
-			}
-			logger.info("接收到的消息：{}",msgStr);
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("kafka消息消费发生异常：{}",e);
-		}
-	}
+                    jsonbody.setText(textContent);
+                    String body = JSON.toJSONString(jsonbody);
+                    String str2 = HttpClientUtils.postJsonAndHeaders(url1, body, "application/json", "UTF-8", headers, 10000, 10000);
+
+                }
+            }
+            logger.info("接收到的消息：{}", msgStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("kafka消息消费发生异常：{}", e);
+        }
+    }
 }
 
 
