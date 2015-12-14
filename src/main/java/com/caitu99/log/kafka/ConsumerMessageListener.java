@@ -43,7 +43,6 @@ public class ConsumerMessageListener implements MessageListener {
 
 			String msgStr = MessageUtils.decodePayload(message, new StringDecoder());
 			logger.debug("Listen to the message is {}",msgStr);
-			System.out.println(msgStr);
 			if(AnsMsg.sendOrNot(msgStr)) {
 				String url1 = "https://oapi.dingtalk.com/gettoken?corpid="+appConfig.corpid+"&corpsecret="+appConfig.corpsecret;
 
@@ -73,10 +72,10 @@ public class ConsumerMessageListener implements MessageListener {
 					jsonbody.setText(textContent);
 					String body = JSON.toJSONString(jsonbody);
 					String str2 = HttpClientUtils.postJsonAndHeaders(url1, body, "application/json", "UTF-8", headers, 10000, 10000);
-					System.out.println(str2);
+
 				}
-				System.out.println(str);
 			}
+			logger.info("接收到的消息：{}",msgStr);
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("kafka消息消费发生异常：{}",e);
