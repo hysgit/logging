@@ -4,7 +4,7 @@
     <property name="APP_NAME" value="Logging"/>
 
     <property name="LOG_HOME" value="${log.path}"/>
-    <property name="ENCODER_PATTERN" value="${APP_NAME} %d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n"/>
+    <property name="ENCODER_PATTERN" value="${HOSTNAME} ${APP_NAME} %d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n"/>
 
     <contextName>${APP_NAME}</contextName>
 
