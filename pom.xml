@@ -168,7 +168,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>Job</finalName>
+        <finalName>logging</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="true" scan="true" scanPeriod="30 seconds">
 
-    <property name="APP_NAME" value="Job"/>
+    <property name="APP_NAME" value="Logging"/>
 
     <property name="LOG_HOME" value="${log.path}"/>
     <property name="ENCODER_PATTERN" value="${APP_NAME} %d{yyyy-MM-dd  HH:mm:ss.SSS} [%thread] %-5level %logger{80} - %msg%n"/>
