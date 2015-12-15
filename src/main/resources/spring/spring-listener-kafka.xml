@@ -21,7 +21,7 @@
     <bean id="kafkaTopicOffsetManager" class="org.springframework.integration.kafka.listener.KafkaTopicOffsetManager">
     	<constructor-arg index="0" ref="zookeeperConnect"/>
     	<!-- 这里配置的topic用来记录已经读取过的消息 -->
-    	<constructor-arg index="1" value="${job.topic}_read_record_times"/>
+    	<constructor-arg index="1" value="${log.topic}_read_record_times"/>
     </bean>
     
     <!-- zk -->
