@@ -38,7 +38,7 @@
     	</constructor-arg>
    		<constructor-arg index="1">
 	   		<list>
-	   			<value>${job.topic}</value>
+	   			<value>${log.topic}</value>
 	   		</list>
    		</constructor-arg>
    		<property name="messageListener" ref="consumerMessageListener"/>
