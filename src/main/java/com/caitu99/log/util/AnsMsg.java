@@ -1,15 +1,21 @@
 package com.caitu99.log.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Created by Lion on 2015/12/12 0012.
  */
+@Service
 public class AnsMsg {
-    private static final Pattern pattern = Pattern.compile("\\d{4}-\\d{2}-\\d{2}\\s{1,2}\\d{2}:\\d{2}:\\d{2}\\.\\d{3}.*?ERROR");
+    @Autowired
+    private  AppConfig appConfig;
 
-    public static boolean sendOrNot(String string) {
+    public  boolean sendOrNot(String string) {
+        Pattern pattern = Pattern.compile(appConfig.pattern);
         Matcher matcher = pattern.matcher(string);
         if (matcher.find()) {
             return true;

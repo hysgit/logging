@@ -28,5 +28,8 @@ public class AppConfig {
     @Value("${dingding.lines}")
     public Integer lines;
 
+    @Value("${pattern.str}")
+    public String pattern;
+
 
 }

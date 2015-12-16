@@ -38,13 +38,15 @@ public class ConsumerMessageListener implements MessageListener {
     @Autowired
     private AppConfig appConfig;
 
+    @Autowired
+    private AnsMsg ansMsg;
+
     @Override
     public void onMessage(KafkaMessage message) {
         try {
-
             String msgStr = MessageUtils.decodePayload(message, new StringDecoder());
             logger.debug("Listen to the message is {}", msgStr);
-            if (AnsMsg.sendOrNot(msgStr)) {
+            if (ansMsg.sendOrNot(msgStr)) {
                 String url1 = "https://oapi.dingtalk.com/gettoken?corpid=" + appConfig.corpid + "&corpsecret=" + appConfig.corpsecret;
 
                 String str = HttpClientUtils.get(url1, "UTF-8");
@@ -75,7 +77,7 @@ public class ConsumerMessageListener implements MessageListener {
                     code = json.getInteger("errcode");
                     if (code != 0) {
                         String msg = json.getString("errmsg");
-                        logger.error("推送消息到钉钉发生错误,错误代码：{}, 错误信息：{}, 完整返回信息：{}", code, msg,str2);
+                        logger.error("推送消息到钉钉发生错误,错误代码：{}, 错误信息：{}, 完整返回信息：{}", code, msg, str2);
                     }
                 }
             }
