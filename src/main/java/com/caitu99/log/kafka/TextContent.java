@@ -1,9 +1,16 @@
 package com.caitu99.log.kafka;
 
+import com.caitu99.log.util.AppConfig;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Created by Lion on 2015/12/14 0014.
  */
 public class TextContent {
+
+    @Autowired
+    private AppConfig appConfig;
 
     private String content;
 
@@ -12,9 +19,54 @@ public class TextContent {
     }
 
     public void setContent(String content) {
-        if (content.contains("\n\t")) {
-            content = content.substring(0, content.indexOf("\n\t"));
+
+        int i = 0;
+        int j = 0;
+        int x = 0;
+        int lines = Integer.valueOf(appConfig.lines);
+        for (; i < lines; i++) {
+            x = content.indexOf("\n\t", x + 2);
+            if (x == -1) {
+                break;
+            } else {
+                j = x;
+            }
         }
-        this.content = content;
+        if (j > 0) {
+            this.content = content.substring(0, j);
+        } else {
+            this.content = content;
+        }
+
+//        if (content.contains("\n\t")) {
+//            content = content.substring(0, content.indexOf("\n\t"));
+//        }
+//        this.content = content;
+    }
+
+    @Test
+    public void setContent2() {
+        String content = "xxxxxxxxxxxxx\n\tafadf af asfsadf sfsdf asd \n\tsfsdfsdfdsfdsftytbhdfhdfh\n\tfdsafdsfdsfdsfdsfdsffdsfdsf\n\tfasfdsfdsfsdrttgasdf";
+        int i = 0;
+        int j = 0;
+        int x = 0;
+        for (; i < 10; i++) {
+            x = content.indexOf("\n\t", x + 2);
+            if (x == -1) {
+                break;
+            } else {
+                j = x;
+            }
+        }
+        if (j > 0) {
+            this.content = content.substring(0, j);
+        } else {
+            this.content = content;
+        }
+
+//        if (content.contains("\n\t")) {
+//            content = content.substring(0, content.indexOf("\n\t"));
+//        }
+//        this.content = content;
     }
 }

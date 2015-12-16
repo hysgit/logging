@@ -25,5 +25,8 @@ public class AppConfig {
     @Value("${dingding.agentid}")
     public String agentId;
 
+    @Value("${dingding.lines}")
+    public String lines;
+
 
 }
