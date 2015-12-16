@@ -26,7 +26,7 @@ public class AppConfig {
     public String agentId;
 
     @Value("${dingding.lines}")
-    public String lines;
+    public Integer lines;
 
 
 }

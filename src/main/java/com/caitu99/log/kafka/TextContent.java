@@ -2,15 +2,11 @@ package com.caitu99.log.kafka;
 
 import com.caitu99.log.util.AppConfig;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Created by Lion on 2015/12/14 0014.
  */
 public class TextContent {
-
-    @Autowired
-    private AppConfig appConfig;
 
     private String content;
 
@@ -18,12 +14,12 @@ public class TextContent {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(String content, AppConfig appConfig) {
 
         int i = 0;
         int j = 0;
         int x = 0;
-        int lines = Integer.valueOf(appConfig.lines);
+        int lines = appConfig.lines;
         for (; i < lines; i++) {
             x = content.indexOf("\n\t", x + 2);
             if (x == -1) {

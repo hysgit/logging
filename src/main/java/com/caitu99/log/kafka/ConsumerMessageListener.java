@@ -57,7 +57,7 @@ public class ConsumerMessageListener implements MessageListener {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Content-Type", "application/json; charset=UTF-8");
                     TextContent textContent = new TextContent();
-                    textContent.setContent(msgStr);
+                    textContent.setContent(msgStr,appConfig);
                     JSONbody jsonbody = new JSONbody();
                     if (!"".equals(appConfig.userId)) {
                         jsonbody.setTouser(appConfig.userId);
