@@ -14,13 +14,20 @@ public class AnsMsg {
     @Autowired
     private  AppConfig appConfig;
 
-    public  boolean sendOrNot(String string) {
+    public  int sendOrNot(String string) {
         Pattern pattern = Pattern.compile(appConfig.pattern);
         Matcher matcher = pattern.matcher(string);
         if (matcher.find()) {
-            return true;
-        } else {
-            return false;
+            return 1;
         }
+
+        Pattern pattern2 = Pattern.compile(appConfig.pattern_store_empty);
+        Matcher matcher2 = pattern2.matcher(string);
+        if(matcher2.find())
+        {
+            return 2;
+        }
+
+        return 0;   //不发送
     }
 }

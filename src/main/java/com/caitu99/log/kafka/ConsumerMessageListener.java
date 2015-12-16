@@ -46,7 +46,8 @@ public class ConsumerMessageListener implements MessageListener {
         try {
             String msgStr = MessageUtils.decodePayload(message, new StringDecoder());
             logger.debug("Listen to the message is {}", msgStr);
-            if (ansMsg.sendOrNot(msgStr)) {
+            int type = ansMsg.sendOrNot(msgStr);
+            if (type > 0) {
                 String url1 = "https://oapi.dingtalk.com/gettoken?corpid=" + appConfig.corpid + "&corpsecret=" + appConfig.corpsecret;
 
                 String str = HttpClientUtils.get(url1, "UTF-8");
@@ -61,11 +62,26 @@ public class ConsumerMessageListener implements MessageListener {
                     TextContent textContent = new TextContent();
                     textContent.setContent(msgStr, appConfig);
                     JSONbody jsonbody = new JSONbody();
-                    if (!"".equals(appConfig.userId)) {
-                        jsonbody.setTouser(appConfig.userId);
+                    if(type == 1) { //错误消息
+                        if (!"".equals(appConfig.userId)) {
+                            jsonbody.setTouser(appConfig.userId);
+                        }
+                        if (!"".equals(appConfig.partyId)) {
+                            jsonbody.setToparty(appConfig.partyId);
+                        }
                     }
-                    if (!"".equals(appConfig.partyId)) {
-                        jsonbody.setToparty(appConfig.partyId);
+                    else if(type == 2)  //库存不足
+                    {
+                        if (!"".equals(appConfig.userId)) {
+                            jsonbody.setTouser(appConfig.userId);
+                        }
+                        if (!"".equals(appConfig.partyid_store_empty)) {
+                            jsonbody.setToparty(appConfig.partyid_store_empty);
+                        }
+                    }
+                    else {
+                        logger.error("不支持的类型");
+                        return;
                     }
                     jsonbody.setAgentid(appConfig.agentId);
                     jsonbody.setMsgtype("text");

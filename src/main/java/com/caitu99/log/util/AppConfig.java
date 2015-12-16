@@ -22,6 +22,9 @@ public class AppConfig {
     @Value("${dingding.partyid}")
     public String partyId;
 
+    @Value("${dingding.partyid_store_empty}")
+    public String partyid_store_empty;
+
     @Value("${dingding.agentid}")
     public String agentId;
 
@@ -30,6 +33,9 @@ public class AppConfig {
 
     @Value("${pattern.str}")
     public String pattern;
+
+    @Value("${pattern.store_empty}")
+    public String pattern_store_empty;
 
 
 }
