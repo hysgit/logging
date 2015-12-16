@@ -33,7 +33,7 @@ import java.util.Map;
 @Service("consumerMessageListener")
 public class ConsumerMessageListener implements MessageListener {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(ConsumerMessageListener.class);
 
     @Autowired
     private AppConfig appConfig;
@@ -57,7 +57,7 @@ public class ConsumerMessageListener implements MessageListener {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Content-Type", "application/json; charset=UTF-8");
                     TextContent textContent = new TextContent();
-                    textContent.setContent(msgStr,appConfig);
+                    textContent.setContent(msgStr, appConfig);
                     JSONbody jsonbody = new JSONbody();
                     if (!"".equals(appConfig.userId)) {
                         jsonbody.setTouser(appConfig.userId);
@@ -71,7 +71,12 @@ public class ConsumerMessageListener implements MessageListener {
                     jsonbody.setText(textContent);
                     String body = JSON.toJSONString(jsonbody);
                     String str2 = HttpClientUtils.postJsonAndHeaders(url1, body, "application/json", "UTF-8", headers, 10000, 10000);
-
+                    json = JSON.parseObject(str2);
+                    code = json.getInteger("errcode");
+                    if (code != 0) {
+                        String msg = json.getString("errmsg");
+                        logger.error("推送消息到钉钉发生错误,错误代码：{}, 错误信息：{}, 完整返回信息：{}", code, msg,str2);
+                    }
                 }
             }
             logger.info("接收到的消息：{}", msgStr);
@@ -81,7 +86,3 @@ public class ConsumerMessageListener implements MessageListener {
         }
     }
 }
-
-
-
-
