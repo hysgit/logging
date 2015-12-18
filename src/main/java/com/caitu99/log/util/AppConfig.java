@@ -31,7 +31,7 @@ public class AppConfig {
     @Value("${dingding.lines}")
     public Integer lines;
 
-    @Value("${pattern.str}")
+    @Value("${pattern.str.regexp}")
     public String pattern;
 
     @Value("${pattern.store_empty}")

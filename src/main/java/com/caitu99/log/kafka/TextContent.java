@@ -21,7 +21,7 @@ public class TextContent {
         int x = 0;
         int lines = appConfig.lines;
         for (; i < lines; i++) {
-            x = content.indexOf("\n\t", x + 2);
+            x = content.indexOf("\n", x + 1);
             if (x == -1) {
                 break;
             } else {
