@@ -28,6 +28,13 @@ public class AnsMsg {
             return 2;
         }
 
+        Pattern pattern3 = Pattern.compile(appConfig.pattern_fen_less);
+        Matcher matcher3 = pattern3.matcher(string);
+        if(matcher3.find())
+        {
+            return 3;
+        }
+
         return 0;   //不发送
     }
 }

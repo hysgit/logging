@@ -18,6 +18,7 @@ import org.springframework.integration.kafka.serializer.common.StringDecoder;
 import org.springframework.integration.kafka.util.MessageUtils;
 import org.springframework.stereotype.Service;
 
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -60,7 +61,7 @@ public class ConsumerMessageListener implements MessageListener {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Content-Type", "application/json; charset=UTF-8");
                     TextContent textContent = new TextContent();
-                    textContent.setContent(msgStr, appConfig);
+                    textContent.setContent(InetAddress.getLocalHost().getHostName()+"-"+msgStr, appConfig);
                     JSONbody jsonbody = new JSONbody();
                     if(type == 1) { //错误消息
                         if (!"".equals(appConfig.userId)) {
@@ -79,10 +80,18 @@ public class ConsumerMessageListener implements MessageListener {
                             jsonbody.setToparty(appConfig.partyid_store_empty);
                         }
                     }
-                    else {
+                    else if (type == 3) {
+                        if (!"".equals(appConfig.userId)) {
+                            jsonbody.setTouser(appConfig.userid_fen_less);
+                        }
+//                        if (!"".equals(appConfig.partyId)) {
+//                            jsonbody.setToparty(appConfig.partyId);
+//                        }
+                    } else {
                         logger.error("不支持的类型");
                         return;
                     }
+
                     jsonbody.setAgentid(appConfig.agentId);
                     jsonbody.setMsgtype("text");
 

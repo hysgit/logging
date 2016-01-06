@@ -19,6 +19,9 @@ public class AppConfig {
     @Value("${dingding.userid}")
     public String userId;
 
+    @Value("${dingding.userid_fen_less}")
+    public String userid_fen_less;
+
     @Value("${dingding.partyid}")
     public String partyId;
 
@@ -36,6 +39,9 @@ public class AppConfig {
 
     @Value("${pattern.store_empty}")
     public String pattern_store_empty;
+
+    @Value("${pattern.fen_less}")
+    public String pattern_fen_less;
 
 
 }
