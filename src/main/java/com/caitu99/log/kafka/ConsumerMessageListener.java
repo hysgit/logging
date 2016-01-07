@@ -18,7 +18,6 @@ import org.springframework.integration.kafka.serializer.common.StringDecoder;
 import org.springframework.integration.kafka.util.MessageUtils;
 import org.springframework.stereotype.Service;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +60,7 @@ public class ConsumerMessageListener implements MessageListener {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Content-Type", "application/json; charset=UTF-8");
                     TextContent textContent = new TextContent();
-                    textContent.setContent(InetAddress.getLocalHost().getHostName()+"-"+msgStr, appConfig);
+                    textContent.setContent(msgStr, appConfig);
                     JSONbody jsonbody = new JSONbody();
                     if(type == 1) { //错误消息
                         if (!"".equals(appConfig.userId)) {
