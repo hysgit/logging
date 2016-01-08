@@ -58,7 +58,7 @@
     </logger>
 
     <root>
-        <level value="INFO"/>
+        <level value="${log.level}"/>
         <appender-ref ref="consoleAppender"/>
         <appender-ref ref="allFileAppender"/>
         <appender-ref ref="errFileAppender"/>

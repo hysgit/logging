@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * kafka 消息消费者
@@ -41,74 +42,77 @@ public class ConsumerMessageListener implements MessageListener {
     @Autowired
     private AnsMsg ansMsg;
 
+    @Autowired
+    private Properties properties;
+
     @Override
     public void onMessage(KafkaMessage message) {
         try {
             String msgStr = MessageUtils.decodePayload(message, new StringDecoder());
             logger.debug("Listen to the message is {}", msgStr);
-            int type = ansMsg.sendOrNot(msgStr);
-            if (type > 0) {
-                String url1 = "https://oapi.dingtalk.com/gettoken?corpid=" + appConfig.corpid + "&corpsecret=" + appConfig.corpsecret;
-
-                String str = HttpClientUtils.get(url1, "UTF-8");
-                JSONObject json = JSON.parseObject(str);
-                Integer code = json.getInteger("errcode");
-                String access_token = json.getString("access_token");
-
-                if (code == 0) {
-                    url1 = "https://oapi.dingtalk.com/message/send?access_token=" + access_token;
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Content-Type", "application/json; charset=UTF-8");
-                    TextContent textContent = new TextContent();
-                    textContent.setContent(msgStr, appConfig);
-                    JSONbody jsonbody = new JSONbody();
-                    if(type == 1) { //错误消息
-                        if (!"".equals(appConfig.userId)) {
-                            jsonbody.setTouser(appConfig.userId);
-                        }
-                        if (!"".equals(appConfig.partyId)) {
-                            jsonbody.setToparty(appConfig.partyId);
-                        }
-                    }
-                    else if(type == 2)  //库存不足
-                    {
-                        if (!"".equals(appConfig.userId)) {
-                            jsonbody.setTouser(appConfig.userId);
-                        }
-                        if (!"".equals(appConfig.partyid_store_empty)) {
-                            jsonbody.setToparty(appConfig.partyid_store_empty);
-                        }
-                    }
-                    else if (type == 3) {
-                        if (!"".equals(appConfig.userId)) {
-                            jsonbody.setTouser(appConfig.userid_fen_less);
-                        }
-//                        if (!"".equals(appConfig.partyId)) {
-//                            jsonbody.setToparty(appConfig.partyId);
-//                        }
-                    } else {
-                        logger.error("不支持的类型");
-                        return;
-                    }
-
-                    jsonbody.setAgentid(appConfig.agentId);
-                    jsonbody.setMsgtype("text");
-
-                    jsonbody.setText(textContent);
-                    String body = JSON.toJSONString(jsonbody);
-                    String str2 = HttpClientUtils.postJsonAndHeaders(url1, body, "application/json", "UTF-8", headers, 10000, 10000);
-                    json = JSON.parseObject(str2);
-                    code = json.getInteger("errcode");
-                    if (code != 0) {
-                        String msg = json.getString("errmsg");
-                        logger.error("推送消息到钉钉发生错误,错误代码：{}, 错误信息：{}, 完整返回信息：{}", code, msg, str2);
-                    }
-                }
+            String type = ansMsg.sendOrNot(msgStr);
+            if (!"0".equals(type)) {
+                sendMsg(msgStr, type);
             }
             logger.info("接收到的消息：{}", msgStr);
         } catch (Exception e) {
-            e.printStackTrace();
             logger.error("kafka消息消费发生异常：{}", e);
+        }
+    }
+
+    private void sendMsg(String message, String type) {
+
+        String url1 = "https://oapi.dingtalk.com/gettoken?corpid=" + appConfig.corpid + "&corpsecret=" + appConfig.corpsecret;
+        String str = null;
+        try {
+            str = HttpClientUtils.get(url1, "UTF-8");
+        } catch (Exception e) {
+            logger.error("登录钉钉发生异常：",e);
+            return;
+        }
+        JSONObject json = JSON.parseObject(str);
+        Integer code = json.getInteger("errcode");
+        String access_token = json.getString("access_token");
+
+        if (code == 0) {
+            //Properties properties = SpringContext.getBean("properties");
+            url1 = "https://oapi.dingtalk.com/message/send?access_token=" + access_token;
+            Map<String, String> headers = new HashMap<>();
+            headers.put("Content-Type", "application/json; charset=UTF-8");
+            TextContent textContent = new TextContent();
+            textContent.setContent(message, appConfig);
+            JSONbody jsonbody = new JSONbody();
+
+            String userid = (String) properties.get("dingding.userid"+type);
+            String partyid = (String) properties.get("dingding.partyid"+type);
+            if (userid != null && !userid.equals("")) {
+                jsonbody.setTouser(userid);
+            }
+            if (partyid != null && !partyid.equals("")) {
+                jsonbody.setToparty(partyid);
+            }
+
+            jsonbody.setAgentid(appConfig.agentId);
+            jsonbody.setMsgtype("text");
+
+            jsonbody.setText(textContent);
+            String body = JSON.toJSONString(jsonbody);
+            String str2 = null;
+            try {
+                str2 = HttpClientUtils.postJsonAndHeaders(url1, body, "application/json", "UTF-8", headers, 10000, 10000);
+            } catch (Exception e) {
+                logger.error("推送消息到钉钉发生异常：",e);
+            }
+            json = JSON.parseObject(str2);
+            code = json.getInteger("errcode");
+            if (code != 0) {
+                String msg = json.getString("errmsg");
+                logger.error("推送消息到钉钉发生错误,错误代码：{}, 错误信息：{}, 完整返回信息：{}", code, msg, str2);
+            }
+        }
+        else
+        {
+            logger.error("登录钉钉失败：{}",str);
         }
     }
 }
