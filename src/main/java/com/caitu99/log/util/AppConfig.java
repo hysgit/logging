@@ -16,32 +16,10 @@ public class AppConfig {
     @Value("${dingding.corpsecret}")
     public String corpsecret;
 
-    @Value("${dingding.userid}")
-    public String userId;
-
-    @Value("${dingding.userid_fen_less}")
-    public String userid_fen_less;
-
-    @Value("${dingding.partyid}")
-    public String partyId;
-
-    @Value("${dingding.partyid_store_empty}")
-    public String partyid_store_empty;
-
     @Value("${dingding.agentid}")
     public String agentId;
 
     @Value("${dingding.lines}")
     public Integer lines;
-
-    @Value("${pattern.str.regexp}")
-    public String pattern;
-
-    @Value("${pattern.store_empty}")
-    public String pattern_store_empty;
-
-    @Value("${pattern.fen_less}")
-    public String pattern_fen_less;
-
 
 }

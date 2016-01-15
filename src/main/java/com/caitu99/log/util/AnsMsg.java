@@ -1,8 +1,11 @@
 package com.caitu99.log.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.caitu99.log.util.spring.SpringContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,30 +14,35 @@ import java.util.regex.Pattern;
  */
 @Service
 public class AnsMsg {
-    @Autowired
-    private  AppConfig appConfig;
+    private final Logger logger = LoggerFactory.getLogger(AnsMsg.class);
+    public  String sendOrNot(String string) {
 
-    public  int sendOrNot(String string) {
-        Pattern pattern = Pattern.compile(appConfig.pattern);
-        Matcher matcher = pattern.matcher(string);
-        if (matcher.find()) {
-            return 1;
-        }
-
-        Pattern pattern2 = Pattern.compile(appConfig.pattern_store_empty);
-        Matcher matcher2 = pattern2.matcher(string);
-        if(matcher2.find())
+        Properties properties = SpringContext.getBean("properties");
+        String temple= (String) properties.get("dingding.temple");
+        if(temple==null || "".equals(temple))
         {
-            return 2;
+            logger.error("模板不存在");
+            return "0";//未找到模板
         }
+        String[] indexs = temple.split(":");
+        for (String index : indexs) {
+            String patternStr = (String) properties.get("pattern.regx" + index);
+            if(patternStr==null || patternStr.equals("")) {
+                if(!"x".equals(index)) {
+                    logger.error("有正则表达式为空,{}", index);
+                }
+                return "0";
+            }
+            Pattern pattern = Pattern.compile(patternStr);
+            Matcher matcher = pattern.matcher(string);
+            if (matcher.find()) {
+                if (temple.contains(":x")) {
+                    return "x"; //自测
+                }
+                return index;
+            }
 
-        Pattern pattern3 = Pattern.compile(appConfig.pattern_fen_less);
-        Matcher matcher3 = pattern3.matcher(string);
-        if(matcher3.find())
-        {
-            return 3;
         }
-
-        return 0;   //不发送
+        return "0";
     }
 }

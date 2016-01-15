@@ -46,23 +46,15 @@
         </filter>
     </appender>
 
-    <appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
-        <syslogHost>127.0.0.1</syslogHost>
-        <port>5140</port>
-        <facility>ALERT</facility>
-        <suffixPattern>${ENCODER_PATTERN}</suffixPattern>
-    </appender>
-
     <logger name="org.apache.ibatis" level="INFO" addtivity="false">
         <appender-ref ref="allFileAppender"/>
     </logger>
 
     <root>
-        <level value="INFO"/>
+        <level value="${log.level}"/>
         <appender-ref ref="consoleAppender"/>
         <appender-ref ref="allFileAppender"/>
         <appender-ref ref="errFileAppender"/>
-        <appender-ref ref="SYSLOG" />
     </root>
 
 </configuration>
